@@ -62,7 +62,7 @@ class Eq a where
 (/=) :: a -> a -> Bool
 ```
 
-Egy típusosztályt egy magára értelmezett függvények gyüjteményeként lehet tekinteni. A `Show`-ba pl definiálva van egy show függvény. Ezt használja a GHCI a kiíráshoz. Az `Eq`-ba (Az EQuivalence szóból, ami egyenértékűséget jelent) meg a == és /= operátorok vannak definiálva. Ez azt jelenti, hogy bármi ami az Eq-nak egy Instance-je (nem tudom mi lehet ez magyarul), arra értelmezve van az (==) és (/=).
+Egy típusosztályra egy magára értelmezett függvények gyüjteményeként lehet tekinteni. A `Show`-ba pl definiálva van egy show függvény. Ezt használja a GHCI a kiíráshoz. Az `Eq`-ba (Az EQuivalence szóból, ami egyenértékűséget jelent) meg a `(==)` és `(/=)` operátorok vannak definiálva. Ez azt jelenti, hogy bármi ami az Eq-nak egy Instance-je, arra értelmezve van az `(==)` és `(/=)`.
 Saját típusosztályt is lehet definiálni! Majd csinálunk egyet később.
 
 De hogy lehet őket használni?
@@ -75,20 +75,20 @@ data Mood = Happy | Bored | Okay | Sad
   deriving Show
 ```
 
-Mit is csináltunk most? Megmondtuk, hogy a `Mood` típus származtasson a `Show` típusosztályból, vagyis hogy a `Show` típusosztály függvényei legyenek értelmezve a Mood adattípusra. Ez azt jelenti hogy a `Show` függvényei használhatóak a Mood típusokra is.
+Mit is csináltunk most? Megmondtuk, hogy a `Mood` típus származtasson a `Show` típusosztályból, vagyis hogy a `Show` típusosztály függvényei legyenek értelmezve a `Mood` adattípusra. Ez azt jelenti hogy a `Show` függvényei használhatóak a `Mood` típusokra is.
 Olyan mintha írtunk volna egy
 
 ```hs
 show :: Mood -> String
 ```
 
-függvényt. Amikor deriving-ot használunk, akkor valami alapértelmezett működése lesz definiálva a deriving-olt típusosztály függvényeinek.
-Ez lehet hogy jó, lehet hogy nem. A show pl csak kiírja a konstruktort `String`-ként, majd az utána található pareméterekre is meghívja a show fgv-t.
+függvényt. Amikor deriving-ot használunk, akkor valami alapértelmezett működése lesz a deriving-olt típusosztály függvényeinek.
+Ez lehet hogy jó, lehet hogy nem. A show pl csak kiírja a konstruktort `String`-ként, majd az utána található pareméterekre is meghívja a `show` fgv-t.
 
 # Adattípus változóval
 
-Tegyük fel hogy van egy játékunk, amiben vannak statikus prop-ok (random tárgyak, pl kövek, növényzet, fák stb..), meg vannak NPC-k meg vannak Player karakterek.
-Hozzunk létre teszt adattípusokat. Most más paramétereket nem adok meg mert nem szükséges a példához.
+Tegyük fel hogy van egy játékunk, amiben vannak statikus prop-ok (random tárgyak, pl kövek, növényzet, fák stb..), meg vannak NPC-k meg Player karakterek.
+Hozzunk létre teszt típusokat. Most más paramétereket nem adok meg mert nem szükséges a példához.
 
 ```hs
 data Prop = Furniture | Decoration
@@ -100,7 +100,7 @@ type Level = Int
 type Player = (Health, Level) -- Csak azért írok (Health, Level)-t hogy könnyebb legyen olvasni. Egyébkény teljesen ugyan az mintha (Integer, Int)-et írtam volna)
 ```
 
-Ezek mind nagyon különböző adattípus szerkezetet igényelnek, viszont akarjuk ezeket mind mozgatni, és tárolni azt hogy hol vannak.
+Ezek mind nagyon különböző típus szerkezetet igényelnek, viszont akarjuk ezeket mind mozgatni, és tárolni azt hogy hol vannak.
 Létre tudunk hozni egy adattípust ami "becsomagolja" nekünk a Prop, NPC és Player típusú változókat, és hozzájuk rendel egy koordinátát.
 
 ```hs
@@ -112,14 +112,13 @@ Itt azt mondtuk hogy ez az `ObjectOnMap` adattípus fogjon egy bármilyen típus
 
 ```hs
 data ObjectOnMap = Object VártTípus Location
-
 ```
 
 # Instance
 
-### Minimáli definíció
+### Minimális definíció
 
-Egy típusosztály, ahogy fentebb néztük, végülis egy magára értelmezett függvények gyüjteményeként lehet gondolni. Ami jó az, hogy ezekben a gyüjteményekben sok függvény egy másik, a típusosztályban definiált függvénnyel van definiálva.
+Egy típusosztályra, ahogy fentebb néztük, végülis egy magára értelmezett függvények gyüjteményeként lehet gondolni. Ami jó az, hogy ezekben a gyüjteményekben sok függvény egy másik, a típusosztályban definiált függvénnyel van definiálva.
 Pl nézzük az Eq-t: írjuk be `ghci`-be hogy `:i Eq`. Ezt kapjuk az elején:
 
 ```hs
@@ -131,7 +130,7 @@ class Eq a where
 ```
 
 és utána egy csomó Eq instance-t (ezekre kitérünk mindjárt).
-Szóval Eq-ba van egy `(==)` és egy `(/=)` függvény. De van egy `{-# MINIMAL (==) | (/=) #-}` sor is. Ez az Eq típusosztálynak az **elégséges meghatározása (minimal complete definition)**. Ez mit jelent? Hát azt, hogy ahhoz hogy tudd használni az összes függvényt az Eq-n belül, a `(==)` VAGY (a `|` jel jelöli a VAGY-t) a `(/==)` függvényt kell definiálni csak, nem mindkettőt. Azért csak az egyiket kell mert `(==) = not (/=)` vagy `(/=) = not (==)`.
+Szóval Eq-ban van egy `(==)` és egy `(/=)` függvény. De van egy `{-# MINIMAL (==) | (/=) #-}` sor is. Ez az Eq típusosztálynak az **elégséges meghatározása (minimal complete definition)**. Ez mit jelent? Hát azt, hogy ahhoz hogy tudd használni az összes függvényt az Eq-n belül, a `(==)` VAGY (a `|` jel jelöli a VAGY-t) a `(/==)` függvényt kell definiálni csak, nem mindkettőt. Azért csak az egyiket kell mert `(==) = not (/=)` vagy `(/=) = not (==)`.
 
 Nézzünk még egy példát: `:t Foldable`:
 
@@ -162,7 +161,7 @@ Itt kicsit több függvény van. Ha valami új, saját típusra akarnánk a Fold
 ## Instance Definition
 
 Oké, most tudjuk hogy konkrétan milyen függvényt vagy függvényeket kell definiálni, de nem tudjuk azt hogy hogyan. Amikor használtuk a `:i Eq` parancsot GHCI-ben, láttunk a `{-# MINIMAL ... #-}` rész alatt egy csomó `instance`-el kezdődő sort. Nézzünk meg egyet: `instance Eq Integer -- Defined in ‘GHC.Num.Integer’`. Ez azt jelenti hogy `Integer` típusra értelmezve vannak az Eq függvények, mert létezik egy Eq Integer `instance`.
-Aki valamennyire használt valami Objektum Orientált nyelvet, lehet ismeri az `instance` szót (magyarul a "példány" szót használnám erre). Nagy vonalakban annyi a lényeg, hogy amikor létrehozunk vagy típusosztályt, mint az `Eq`-t (azt nem mi hoztuk létre de mindegy), az végülis csak egy sablon/minta/terv. Annak egy megvalósítása az instance. Szóval létrehozunk egy `Eq` megvalósítást az `Integer` típusra, amivel aztán bármilyen `Eq` függvényt használhatunk Integerekre.
+Aki valamennyire használt valami Objektum Orientált nyelvet, lehet ismeri az `instance` szót (magyarul a "példány" szót használnám erre). Nagy vonalakban annyi a lényeg, hogy amikor létrehozunk egy típusosztályt, mint az `Eq`-t (azt nem mi hoztuk létre de mindegy), az végülis csak egy sablon/minta/terv. A tervnek egy megvalósítása az instance. Szóval létrehozunk egy `Eq` megvalósítást az `Integer` típusra, amivel aztán bármilyen `Eq` függvényt használhatunk Integerekre.
 (Objektum orientál nyelvekben az instancek konkrét változók szoktak lenni, és a minták/sablonok meg az objectek, és az objectek alapján hozunk létre új változókat. Haskellben nem, az instance egy új típusra definiál egy függvény gyüjteményt)
 
 Hát ez egy kicsit nehezebb téma volt... inkább nézzünk egy példát:
@@ -175,7 +174,7 @@ type Age = Int
 data Laptop = Dell Model Age | Apple Model Age | Lenovo Model Age
 ```
 
-Tegyük fel hogy az Eq függvényeket akarjuk implementálni erre az adattípusra. Az Eq minimális definicío mi is? `:i Eq`, és ott már leolvashatjuk hogy `(==) | (/=)`. Ezt a sablont kell követni: `instance "Típusosztály" "Típus" where "és ide a fügvényeket"`. A célunk legyen az hogy két laptop egyforma ha a Márka és a Model egyforma, a kor nem számít.
+Tegyük fel hogy az Eq függvényeket akarjuk definiálni erre az adattípusra. Az Eq minimális definicío mi is? `:i Eq`, és ott már leolvashatjuk hogy `(==) | (/=)`. Ezt a sablont kell követni: `instance "Típusosztály" "Típus" where "és ide a fügvényeket"`. A célunk legyen az hogy két laptop egyforma ha a Márka és a Model egyforma, a kor nem számít.
 
 ```hs
 instance Eq Laptop where
@@ -189,7 +188,7 @@ instance Eq Laptop where
 
 Mostmár ha használjuk a `==` függvényt `Laptop` típusú változókra, működni fog. De a `(/=)` is használható, pedig nem foglalkoztunk vele!
 
-Kicsit bonyolultabb példa is legyen, használjuk a fentebbi `ObjectOnMap` adattípust, és definiáljuk rá az Eq-t. A cél az hogy két `ObjectOnMap` akkor legyen egyforma, ha az `x` egyforma és a `Location` is.
+Kicsit bonyolultabb példa is legyen. Használjuk a fentebbi `ObjectOnMap` adattípust, és definiáljuk rá az Eq-t. A cél az hogy két `ObjectOnMap` akkor legyen egyforma, ha az `x` egyforma és a `Location` is.
 
 ```hs
 data Prop = Furniture | Decoration
@@ -216,7 +215,7 @@ instance Eq x => Eq (ObjectOnMap x) where
     (==) (Object x location) (Object x2 location2) = x == x2 && location == location2
 ```
 
-Ugyanúgy kell típus megszorítást alkalmazni mint függvényeknél! Még egyszer: Azt mondtuk hogy hozzunk létre eg `Eq` instance-t az (ObjectOnMap x) típusra, ahol x egy olyan típus ami Eq-nak az instance-je.
+Ugyanúgy kell típus megszorítást alkalmazni mint függvényeknél! Még egyszer: Azt mondtuk hogy hozzunk létre egy `Eq` instance-t az (ObjectOnMap x) típusra, ahol x egy olyan típus ami Eq-nak az instance-je.
 
 He létrehoznánk egy új `ObjectOnMap` változót és egy `NPC` típusú változót rakunk bele, a `==` függvény már nem lenne értelmezve rá.
 
@@ -245,13 +244,13 @@ Milyen hibát kapunk ha a `legolas == elrond` sort futtatjuk GHCI-be?
 
 Hát azt amit vártunk. `NPC`-re nincs értelmezve az `Eq`, viszont az `ObjectOnMap`-re igen, de csak ha olyan változót kap, amire értelmezve van az `Eq`.
 
-_Megjegyzés: Az Ord típus egyik feltétele hogy Eq már értelmezve legyen. Ezért csak olyan Típusokra lehet Ord instance-t csinálni, aminek már van Eq instance-je_
+_Megjegyzés: Az Ord típus egyik feltétele hogy Eq már értelmezve legyen. Ezért csak olyan Típusokra lehet Ord instance-t csinálni, aminek már van Eq instance-je._
 
 # Új típusosztályok
 
-Ez már az utolsó rész lesz, esküszöm. Tudunk típusosztály instanceket létrehozni. Most csak az hiányzik hogy saját típusosztályt hozzunk létre. Tekintsünk vissza egy kicsit. A típusosztályra tekinthetünk úgy mint egy függvény gyűjtemény. Hozzunk létre egy típusosztályt, aminek a célja az mozgat entitásokat, mint pl az `ObjectOnMap` típusú változókat.
+Ez már az utolsó rész lesz, esküszöm. Tudunk típusosztály instanceket létrehozni. Most csak az hiányzik hogy saját típusosztályt hozzunk létre. Tekintsünk vissza egy kicsit. A típusosztályra tekinthetünk úgy mint egy függvény gyűjtemény. Hozzunk létre egy típusosztályt, aminek a célja az hogy mozgat entitásokat, mint pl az `ObjectOnMap` típusú változókat.
 
-Kezdjük egyszerűen. Egy függvént amivel egy valami arréb tudunk mozgatni, és egy függvény ami megadja egy valaminek a helyét:
+Kezdjük egyszerűen. Egy függvény amivel egy valamit arréb tudunk mozgatni, és egy függvény ami megadja egy valaminek a helyét:
 
 ```hs
 class Moveable a where
@@ -300,7 +299,7 @@ getAreaLocation (Outdoor _ location) = location
 
 Hát nem tudom ti hogy gondoljátok, de kicsit macerának tűnik. Jobb lenne ha egyszerűen tudnánk a `moveTo` függvényt használni bármire amit mozgatni akarunk, és hagyni a Haskellt hogy alkalmazza a helyes implementációt a típus alapján.
 
-Akkor menjünk vissza a típusosztályos módszerhez, és hozzunk létre egy `Moveable` instance-t az `Area` adattípusra.
+Akkor menjünk vissza a típusosztályos módszerhez, és hozzunk létre egy `Moveable` instance-t az `Area` adattípusra is.
 
 ```hs
 instance Moveable (ObjectOnMap a) where
@@ -326,7 +325,7 @@ instance Moveable Area where
 ```
 
 Remek! One function to rule them all.
-De tudod mi még hasznosabb! Újabb függvényt definiálni, ami automatikusan működik minden instance-re! Visszamegyek a Moveable típusosztály definícióba és írok egy `swapLocation` függvényt, ami megcseréli két valaminek a helyét.
+De tudjátok mi még hasznosabb! Újabb függvényt definiálni, ami automatikusan működik minden instance-re! Visszamegyek a Moveable típusosztály definícióba és írok egy `swapLocation` függvényt, ami megcseréli két valaminek a helyét.
 
 ```hs
 class Moveable a where
@@ -346,4 +345,4 @@ class Moveable a where
 ```
 
 Ezt a `swapLocation` függvényt már rögtön a típusosztály definícióban megírtuk. És képzeljétek, rögtön működik az `Area` és az `ObjectOnMap` adattípúsokra is! Miért? Azért mert a `getLocation` és `moveTo` függvényekkel lett definiálva!
-Tulajdonképpen most a `Moveable` típusosztálunak 3 függvénye van, de a minimális teljes definíció egy instance-hez csak a `moveTo` és a `getLocation`. Ez elképesztően hasznos amikor egy típusosztálynak van vagy 8 instance-je és 8 külön definíció helyett megírhatsz egyet ami működik mindenre.
+Tulajdonképpen most a `Moveable` típusosztálynak 3 függvénye van, de a minimális teljes definíció egy instance-hez csak a `moveTo` és a `getLocation`. Ez elképesztően hasznos amikor egy típusosztálynak van vagy 8 instance-je és 8 külön új definíció helyett megírhatsz egyet ami működik mindenre.
